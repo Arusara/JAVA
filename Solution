@@ -1,0 +1,124 @@
+package Audio;
+
+
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.Iterator;
+import java.nio.file.*;
+
+public class Solution {
+
+    public static final String SAMPLE_XLSX_FILE_PATH = "/Users/arumugam/Downloads/BEST_Route_Data - version1_18092018_Walada_BB.xlsx";
+
+
+    public static String firstcolumn="";
+
+    FileSystem fileSys = FileSystems.getDefault();
+
+    public  static final String SOURCE ="/Users/arumugam/Downloads/Audio files for renaming/L2_Next_English";
+
+    Path srcPath  = fileSys.getPath("/Users/arumugam/Downloads/Audio files for renaming/L2_Next_English");
+
+
+    public static void main(String arg[]) throws IOException, InvalidFormatException{
+
+        String fs = System.getProperty("file.separator");
+
+
+        final String current="/Users/arumugam/Downloads/";
+
+        final String destination="Audio files for renaming_final/L2_Next_English";
+
+        String des=current+destination;
+
+        File dir = new File(current+destination);
+        boolean sucess= dir.mkdirs();
+        if(sucess){
+            System.out.println("dir creation sucessful");
+        }
+        Workbook workbook = WorkbookFactory.create(new File(SAMPLE_XLSX_FILE_PATH));
+
+        Sheet sheet = workbook.getSheetAt(0);
+
+
+        final int NO_OF_ROWS = sheet.getLastRowNum();
+
+        String des1=null;
+
+        for (int i=0;i<NO_OF_ROWS;i++) { // For each Row.
+
+            Row row = sheet.getRow(i);
+            if (row == null) {
+                System.out.println("At the end of sheet");
+                break;
+            }
+
+
+
+            Cell cell =row.getCell(0);// Get the Cell at the Index / Column you want.
+
+
+            Cell cell1 = row.getCell(2);
+
+            if(cell1==null||cell==null){
+                break;
+            }
+
+
+
+            if(!firstcolumn.equals(cell.toString())){
+                firstcolumn=cell.toString();
+                des1=des+"/"+firstcolumn;
+                dir = new File(des1);
+                dir.mkdirs();
+                System.out.println(des1+" directory created");
+            }
+            String filename1=cell1.toString();
+            String filename=cell1.toString();
+
+            if(filename1.indexOf('/')!=-1){
+                filename="";
+                System.out.println("aru");
+               String [] str=filename1.split("/");
+               filename=str[0]+":"+str[1];
+            }
+
+
+             filename=filename+".wav";
+
+
+            String src=SOURCE+"/"+filename;
+
+            System.out.println("src"+src);
+
+              Path temp = Files.copy(Paths.get(src),Paths.get(des1+"/"+filename));
+
+         //   copyFileUsingApacheCommonsIO(Paths.get(src),Paths.get(des1));
+
+            System.out.println(cell);
+            System.out.println(cell1);
+
+
+        }
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+}
